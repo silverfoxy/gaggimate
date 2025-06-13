@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
+import { viteMockServe } from 'vite-plugin-mock';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [preact()],
-
+  plugins: [
+    preact(),
+    viteMockServe({
+      mockPath: 'src/mocks',
+      localEnabled: true,
+    }),
+  ],
   server: {
     proxy: {
       '/api': {
