@@ -317,7 +317,7 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["grindDelay"] = settings.getGrindDelay();
     doc["delayAdjust"] = settings.isDelayAdjust();
     doc["timezone"] = settings.getTimezone();
-    doc["clock24hFormat"] = settings.clock24hFormat();
+    doc["clock24hFormat"] = settings.isClock24hFormat();
     doc["standbyTimeout"] = settings.getStandbyTimeout() / 1000;
     serializeJson(doc, *response);
     request->send(response);

@@ -533,9 +533,8 @@ void DefaultUI::updateStandbyScreen() const {
             // allocate enough space for both 12h/24h time formats
             char time[9];
             Settings &settings = controller->getSettings();
-
             const char* format = settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p";
-            strftime(time, sizeof(time), format, timeinfo);
+            strftime(time, sizeof(time), format, &timeinfo);
             lv_label_set_text(ui_StandbyScreen_time, time);
             lv_obj_clear_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
         }
