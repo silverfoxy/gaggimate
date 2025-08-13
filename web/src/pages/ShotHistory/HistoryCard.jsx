@@ -24,9 +24,9 @@ export default function HistoryCard({ shot, onDelete }) {
     }, 10);
   });
   return (
-    <Card xs={12}>
-      <div className="flex flex-row">
-        <span className="font-bold text-xl leading-tight flex-grow">
+    <Card sm={12}>
+      <div className='flex flex-row'>
+        <span className='flex-grow text-xl leading-tight font-bold'>
           {shot.profile} - {date.toLocaleString()}
         </span>
 
@@ -51,14 +51,14 @@ export default function HistoryCard({ shot, onDelete }) {
           </button>
         </div>
       </div>
-      <div className="flex flex-row gap-6 items-center">
-        <div className="flex flex-row gap-2 items-center">
-          <span className="fa fa-clock"></span>
+      <div className='flex flex-row items-center gap-4'>
+        <div className='flex flex-row items-center gap-2'>
+          <span className='fa fa-clock'></span>
           {(shot.duration / 1000).toFixed(1)}s
         </div>
         {shot.volume && (
-          <div className="flex flex-row gap-2 items-center">
-            <span className="fa fa-scale-balanced"></span>
+          <div className='flex flex-row items-center gap-2'>
+            <span className='fa fa-scale-balanced'></span>
             {shot.volume}g
           </div>
         )}
