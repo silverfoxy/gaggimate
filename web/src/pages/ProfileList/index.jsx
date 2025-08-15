@@ -419,6 +419,7 @@ export function ProfileList() {
           </div>
           <input onChange={onUpload} className="hidden" id="profileImport" type="file" accept=".json,application/json" />
         </div>
+      </div>
 
       <div className='grid grid-cols-1 gap-4 lg:grid-cols-12' role='list' aria-label='Profile list'>
         {profiles.map(data => (
