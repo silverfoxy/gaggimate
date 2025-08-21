@@ -6,7 +6,7 @@ import { timezones } from '../../config/zones.js';
 import { computed } from '@preact/signals';
 import { machine } from '../../services/ApiService.js';
 import { getStoredTheme, handleThemeChange } from '../../utils/themeManager.js';
-import { setDashboardLayout } from '../../utils/dashboardManager.js';
+import { setDashboardLayout, DASHBOARD_LAYOUTS } from '../../utils/dashboardManager.js';
 import { PluginCard } from './PluginCard.jsx';
 
 const ledControl = computed(() => machine.value.capabilities.ledControl);
@@ -34,7 +34,7 @@ export function Settings() {
           fetchedSettings.standbyDisplayEnabled !== undefined
             ? fetchedSettings.standbyDisplayEnabled
             : fetchedSettings.standbyBrightness > 0,
-        dashboardLayout: fetchedSettings.dashboardLayout || 'process-first',
+        dashboardLayout: fetchedSettings.dashboardLayout || DASHBOARD_LAYOUTS.ORDER_FIRST,
       };
       setFormData(settingsWithToggle);
     } else {
@@ -132,13 +132,23 @@ export function Settings() {
   );
 
   const onExport = useCallback(() => {
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formData, undefined, 2))}`;
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', 'settings.json');
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+    const jsonStr = JSON.stringify(formData, undefined, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'settings.json';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    
+    document.body.appendChild(a);
+    setTimeout(() => {
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 10);
   }, [formData]);
 
   const onUpload = function (evt) {
@@ -358,7 +368,7 @@ export function Settings() {
                 id='dashboardLayout'
                 name='dashboardLayout'
                 className='select select-bordered w-full'
-                value={formData.dashboardLayout || 'process-first'}
+                value={formData.dashboardLayout || DASHBOARD_LAYOUTS.ORDER_FIRST}
                 onChange={e => {
                   const value = e.target.value;
                   setFormData({
@@ -368,8 +378,8 @@ export function Settings() {
                   setDashboardLayout(value);
                 }}
               >
-                <option value='process-first'>Left Handed</option>
-                <option value='chart-first'>Right Handed</option>
+                <option value={DASHBOARD_LAYOUTS.ORDER_FIRST}>Process Controls First</option>
+                <option value={DASHBOARD_LAYOUTS.ORDER_LAST}>Chart First</option>
               </select>
             </div>
           </Card>
@@ -767,7 +777,7 @@ export function Settings() {
         </div>
 
         <div className='pt-4 lg:col-span-10'>
-          <div className='alert alert-info'>
+          <div className='alert alert-warning'>
             <span>Some options like WiFi, NTP and managing Plugins require a restart.</span>
           </div>
 
